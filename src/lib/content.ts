@@ -11,6 +11,13 @@ export interface PolicyRef {
   description?: string;
 }
 
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+}
+
 export interface Module {
   id: string;
   title: string;
@@ -18,14 +25,16 @@ export interface Module {
   duration: string;
   icon: string;
   // Editorial content
-  lede: string; // Opening hook - the most important thing
-  narrative: string; // The story/explanation
-  pullQuote?: string; // A memorable quote to highlight
-  keyInsight: string; // The "aha" moment
+  lede: string;
+  narrative: string;
+  pullQuote?: string;
+  keyInsight: string;
   // Practical content
   checklist: ChecklistItem[];
   policyRefs: PolicyRef[];
   proTips?: string[];
+  // Knowledge verification
+  quiz?: QuizQuestion[];
 }
 
 export interface Track {
@@ -86,6 +95,26 @@ export const tracks: Track[] = [
           'Create a case timeline template. The moment you get a new case, populate all deadline dates in your calendar with reminders set 3 days before each one.',
           'Document every contact attempt with date, time, method, and outcome. "Called, no answer, left voicemail" is documentation. "Tried to call" is not.',
           'If you see a deadline slipping, file the Reason for Delay form BEFORE the deadline passes, not after. Proactive documentation is always better than reactive explanations.',
+        ],
+        quiz: [
+          {
+            question: 'What is the maximum number of calendar days allowed from referral to the Initial IFSP meeting?',
+            options: ['30 days', '45 days', '60 days', '90 days'],
+            correctIndex: 1,
+            explanation: 'The 45-day timeline is a federal mandate. From the date of referral, you have exactly 45 calendar days to complete the Initial IFSP meeting. This is non-negotiable.',
+          },
+          {
+            question: 'How soon must an ISC make initial contact with a family after assignment?',
+            options: ['24 hours', '2 business days', '7 calendar days', '2 weeks'],
+            correctIndex: 1,
+            explanation: 'Within 2 business days of ISC assignment, you must actually reach the family (not just attempt contact). Quick contact builds trust with families who are often anxious after a referral.',
+          },
+          {
+            question: 'How many days before a child turns 3 must you notify CPSE for transition?',
+            options: ['60 days', '90 days', '120 days', '180 days'],
+            correctIndex: 2,
+            explanation: 'CPSE notification must occur at least 120 days before the child\'s third birthday. Missing this deadline can create a gap in services when the child ages out of Early Intervention.',
+          },
         ],
       },
       {
