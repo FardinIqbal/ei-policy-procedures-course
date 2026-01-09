@@ -3,7 +3,8 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { tracks } from '@/lib/content';
-import { getProgress } from '@/lib/progress';
+import { getProgress, getLastModule, getLastActiveDate, formatRelativeTime, getTotalTimeSpent, formatTime } from '@/lib/progress';
+import { getModule } from '@/lib/content';
 import { useEffect, useState } from 'react';
 import { ThemeToggle } from '@/components/ThemeProvider';
 
@@ -38,11 +39,21 @@ function ChevronRightIcon() {
   );
 }
 
+interface LastModuleInfo {
+  role: 'coordinator' | 'provider';
+  moduleId: string;
+  moduleTitle: string;
+  chapterNum: number;
+}
+
 export default function Home() {
   const [hasProgress, setHasProgress] = useState<{ coordinator: boolean; provider: boolean }>({
     coordinator: false,
     provider: false,
   });
+  const [lastModuleInfo, setLastModuleInfo] = useState<LastModuleInfo | null>(null);
+  const [lastActiveText, setLastActiveText] = useState<string>('');
+  const [totalTime, setTotalTime] = useState<string>('');
 
   useEffect(() => {
     const progress = getProgress();
@@ -50,6 +61,34 @@ export default function Home() {
       coordinator: progress.coordinator.length > 0,
       provider: progress.provider.length > 0,
     });
+
+    // Get last module info
+    const lastModule = getLastModule();
+    if (lastModule) {
+      const track = tracks.find(t => t.id === lastModule.role);
+      const module = getModule(lastModule.role, lastModule.moduleId);
+      if (track && module) {
+        const chapterNum = track.modules.findIndex(m => m.id === lastModule.moduleId) + 1;
+        setLastModuleInfo({
+          role: lastModule.role,
+          moduleId: lastModule.moduleId,
+          moduleTitle: module.title,
+          chapterNum,
+        });
+      }
+    }
+
+    // Get last active time
+    const lastActive = getLastActiveDate();
+    if (lastActive) {
+      setLastActiveText(formatRelativeTime(lastActive));
+    }
+
+    // Get total time spent
+    const timeSpent = getTotalTimeSpent();
+    if (timeSpent > 0) {
+      setTotalTime(formatTime(timeSpent));
+    }
   }, []);
 
   return (
@@ -106,10 +145,37 @@ export default function Home() {
 
           <motion.p
             variants={itemVariants}
-            className="text-sm text-[var(--foreground-subtle)] mb-16"
+            className="text-sm text-[var(--foreground-subtle)] mb-12"
           >
             Based on the NYC Policy Manual, October 2025 Update
           </motion.p>
+
+          {/* Continue Where You Left Off */}
+          {lastModuleInfo && (
+            <motion.div variants={itemVariants} className="mb-12">
+              <Link
+                href={`/course/${lastModuleInfo.role}/${lastModuleInfo.moduleId}`}
+                className="block p-5 border border-[var(--accent)] bg-[var(--accent-muted)] hover:bg-[var(--surface-hover)] transition-colors group"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[var(--accent)] mb-1">Continue where you left off</p>
+                    <p className="text-[var(--foreground)] font-display">
+                      Chapter {lastModuleInfo.chapterNum}: {lastModuleInfo.moduleTitle}
+                    </p>
+                    <div className="flex items-center gap-4 mt-2 text-xs text-[var(--foreground-subtle)]">
+                      <span className="capitalize">{lastModuleInfo.role} Track</span>
+                      {lastActiveText && <span>Last studied {lastActiveText.toLowerCase()}</span>}
+                      {totalTime && <span>Time invested: {totalTime}</span>}
+                    </div>
+                  </div>
+                  <div className="text-[var(--accent)] group-hover:translate-x-1 transition-transform">
+                    <ChevronRightIcon />
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          )}
 
           {/* Role Selection */}
           <motion.div variants={containerVariants} className="space-y-4">

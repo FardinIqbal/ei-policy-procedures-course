@@ -5,9 +5,10 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { getTrack, Role } from '@/lib/content';
-import { getCompletedModules, getCompletionPercentage } from '@/lib/progress';
+import { getCompletedModules, getCompletionPercentage, getTotalTimeSpent, formatTime, getLastActiveDate, formatRelativeTime, getTotalQuizStats, getQuizScore, getEstimatedTimeRemaining } from '@/lib/progress';
 import { ThemeToggle } from '@/components/ThemeProvider';
 import Certificate from '@/components/Certificate';
+import ProgressReport from '@/components/ProgressReport';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -63,12 +64,36 @@ export default function CourseDashboard() {
 
   const [completedModules, setCompletedModules] = useState<string[]>([]);
   const [percentage, setPercentage] = useState(0);
+  const [timeSpent, setTimeSpent] = useState<string>('');
+  const [lastActive, setLastActive] = useState<string>('');
+  const [quizStats, setQuizStats] = useState<{ correct: number; total: number; percentage: number }>({ correct: 0, total: 0, percentage: 0 });
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
 
   useEffect(() => {
     if (track) {
       const completed = getCompletedModules(role);
       setCompletedModules(completed);
       setPercentage(getCompletionPercentage(role, track.modules.length));
+
+      // Time tracking
+      const totalTime = getTotalTimeSpent();
+      if (totalTime > 0) {
+        setTimeSpent(formatTime(totalTime));
+      }
+
+      // Last active
+      const lastActiveDate = getLastActiveDate();
+      if (lastActiveDate) {
+        setLastActive(formatRelativeTime(lastActiveDate));
+      }
+
+      // Quiz stats
+      const stats = getTotalQuizStats(role);
+      setQuizStats(stats);
+
+      // Time remaining estimate
+      const remaining = getEstimatedTimeRemaining(role, track.modules.length);
+      setTimeRemaining(remaining);
     }
   }, [role, track]);
 
@@ -125,13 +150,41 @@ export default function CourseDashboard() {
               {percentage === 100 ? 'Training Complete' : percentage === 0 ? 'Begin Training' : 'Continue Training'}
             </h1>
 
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="p-4 border border-[var(--border)] bg-[var(--surface)]">
+                <p className="text-2xl font-display text-[var(--foreground)]">{percentage}%</p>
+                <p className="text-xs text-[var(--foreground-subtle)]">Complete</p>
+              </div>
+              {quizStats.total > 0 && (
+                <div className="p-4 border border-[var(--border)] bg-[var(--surface)]">
+                  <p className="text-2xl font-display text-[var(--foreground)]">{quizStats.percentage}%</p>
+                  <p className="text-xs text-[var(--foreground-subtle)]">Quiz Accuracy</p>
+                </div>
+              )}
+              {timeSpent && (
+                <div className="p-4 border border-[var(--border)] bg-[var(--surface)]">
+                  <p className="text-2xl font-display text-[var(--foreground)]">{timeSpent}</p>
+                  <p className="text-xs text-[var(--foreground-subtle)]">Time Invested</p>
+                </div>
+              )}
+              {timeRemaining > 0 && percentage < 100 && (
+                <div className="p-4 border border-[var(--border)] bg-[var(--surface)]">
+                  <p className="text-2xl font-display text-[var(--foreground)]">~{timeRemaining} min</p>
+                  <p className="text-xs text-[var(--foreground-subtle)]">Remaining</p>
+                </div>
+              )}
+            </div>
+
             {/* Progress Bar */}
             <div className="mb-4">
               <div className="flex items-center justify-between text-sm mb-2">
                 <span className="text-[var(--foreground-muted)]">
                   {completedModules.length} of {track.modules.length} chapters completed
                 </span>
-                <span className="text-[var(--foreground-subtle)]">{percentage}%</span>
+                {lastActive && (
+                  <span className="text-[var(--foreground-subtle)]">Last studied {lastActive.toLowerCase()}</span>
+                )}
               </div>
               <div className="h-1 bg-[var(--border)] rounded-full overflow-hidden">
                 <motion.div
@@ -167,6 +220,7 @@ export default function CourseDashboard() {
             <div className="border-t border-[var(--border)]">
               {track.modules.map((module, index) => {
                 const isComplete = completedModules.includes(module.id);
+                const moduleQuizScore = getQuizScore(role, module.id);
 
                 return (
                   <motion.div key={module.id} variants={itemVariants}>
@@ -197,6 +251,11 @@ export default function CourseDashboard() {
                             <p className="text-sm text-[var(--foreground-subtle)]">
                               {module.subtitle}
                             </p>
+                            {moduleQuizScore && (
+                              <p className="text-xs text-[var(--foreground-subtle)] mt-1">
+                                Quiz: {moduleQuizScore.correct}/{moduleQuizScore.total} ({Math.round((moduleQuizScore.correct / moduleQuizScore.total) * 100)}%)
+                              </p>
+                            )}
                           </div>
 
                           {/* Duration */}
@@ -211,6 +270,21 @@ export default function CourseDashboard() {
               })}
             </div>
           </motion.div>
+
+          {/* Progress Report */}
+          {completedModules.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-12"
+            >
+              <h2 className="text-sm text-[var(--foreground-subtle)] mb-4 tracking-wide uppercase">
+                Progress Report
+              </h2>
+              <ProgressReport role={role} />
+            </motion.div>
+          )}
 
           {/* Certificate */}
           {percentage === 100 && (

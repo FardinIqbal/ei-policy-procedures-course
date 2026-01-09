@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState, lazy, Suspense, useCallback, useRef } from 'react';
 import { getTrack, getModule, Role, PolicyRef } from '@/lib/content';
 import KnowledgeCheck from '@/components/KnowledgeCheck';
-import { isModuleComplete, markModuleComplete, markModuleIncomplete } from '@/lib/progress';
+import { isModuleComplete, markModuleComplete, markModuleIncomplete, saveQuizScore, setLastModule, updateTimeSpent } from '@/lib/progress';
 import { ThemeToggle } from '@/components/ThemeProvider';
 
 const PDFViewer = lazy(() => import('@/components/PDFViewer'));
@@ -82,18 +82,37 @@ export default function ChapterView() {
   useEffect(() => {
     if (module) {
       setIsComplete(isModuleComplete(role, module.id));
+      setLastModule(role, module.id);
     }
   }, [role, module]);
 
-  // Prevent body scroll when PDF modal is open on mobile
+  // Track time spent on module
   useEffect(() => {
-    if (showPDF) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    if (!module) return;
+    const interval = setInterval(() => {
+      updateTimeSpent(role, module.id, 30);
+    }, 30000); // Update every 30 seconds
+    return () => clearInterval(interval);
+  }, [role, module]);
+
+  // Prevent body scroll when PDF modal is open on mobile only
+  useEffect(() => {
+    const handleResize = () => {
+      // Only lock scroll on mobile (< 1024px) when PDF is shown
+      const isMobile = window.innerWidth < 1024;
+      if (showPDF && isMobile) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
     return () => {
       document.body.style.overflow = '';
+      window.removeEventListener('resize', handleResize);
     };
   }, [showPDF]);
 
@@ -173,6 +192,20 @@ export default function ChapterView() {
   const openPolicyRef = (ref: PolicyRef) => {
     setPdfPage(ref.page);
     setShowPDF(true);
+  };
+
+  const handleQuizComplete = (correct: number, total: number) => {
+    saveQuizScore(role, module.id, correct, total);
+    if (!isComplete) {
+      markModuleComplete(role, module.id);
+      setIsComplete(true);
+    }
+  };
+
+  const handleAdvanceToNext = () => {
+    if (nextModule) {
+      router.push(`/course/${role}/${nextModule.id}`);
+    }
   };
 
   const renderNarrative = (text: string) => {
@@ -350,7 +383,12 @@ export default function ChapterView() {
                 <h2 className="text-sm text-[var(--foreground-subtle)] mb-4 tracking-wide uppercase">
                   Verify Your Understanding
                 </h2>
-                <KnowledgeCheck questions={module.quiz} />
+                <KnowledgeCheck
+                  questions={module.quiz}
+                  onComplete={handleQuizComplete}
+                  onAdvanceToNext={handleAdvanceToNext}
+                  hasNextModule={!!nextModule}
+                />
               </motion.section>
             )}
 

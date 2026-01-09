@@ -120,16 +120,61 @@ export default function PDFViewer({ pageNumber: initialPage, onClose }: PDFViewe
     };
   }, [isFullscreen]);
 
-  // Handle escape key to exit fullscreen
+  // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isFullscreen) {
-        setIsFullscreen(false);
+      // Don't handle if user is typing in an input
+      if (e.target instanceof HTMLInputElement) return;
+
+      switch (e.key) {
+        case 'Escape':
+          if (isFullscreen) {
+            setIsFullscreen(false);
+          } else if (onClose) {
+            onClose();
+          }
+          break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          e.preventDefault();
+          goToPrevPage();
+          break;
+        case 'ArrowRight':
+        case 'ArrowDown':
+          e.preventDefault();
+          goToNextPage();
+          break;
+        case 'f':
+        case 'F':
+          if (!e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            toggleFullscreen();
+          }
+          break;
+        case '+':
+        case '=':
+          if (!e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            zoomIn();
+          }
+          break;
+        case '-':
+          if (!e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            zoomOut();
+          }
+          break;
+        case '0':
+          if (!e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            resetZoom();
+          }
+          break;
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isFullscreen]);
+  }, [isFullscreen, numPages, pageNumber, onClose]);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
@@ -266,6 +311,7 @@ export default function PDFViewer({ pageNumber: initialPage, onClose }: PDFViewe
           onClick={goToPrevPage}
           disabled={pageNumber <= 1}
           className="p-2 hover:bg-[var(--surface-hover)] text-[var(--foreground-muted)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          title="Previous page (Arrow Left)"
         >
           <ChevronLeftIcon />
         </button>
@@ -285,9 +331,17 @@ export default function PDFViewer({ pageNumber: initialPage, onClose }: PDFViewe
           onClick={goToNextPage}
           disabled={pageNumber >= numPages}
           className="p-2 hover:bg-[var(--surface-hover)] text-[var(--foreground-muted)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          title="Next page (Arrow Right)"
         >
           <ChevronRightIcon />
         </button>
+      </div>
+
+      {/* Keyboard Shortcuts Hint */}
+      <div className="px-4 py-2 border-t border-[var(--border)] bg-[var(--background-subtle)]">
+        <p className="text-xs text-[var(--foreground-subtle)] text-center">
+          Keyboard: <span className="text-[var(--foreground-muted)]">Arrows</span> navigate &middot; <span className="text-[var(--foreground-muted)]">F</span> fullscreen &middot; <span className="text-[var(--foreground-muted)]">+/-</span> zoom &middot; <span className="text-[var(--foreground-muted)]">Esc</span> close
+        </p>
       </div>
     </>
   );

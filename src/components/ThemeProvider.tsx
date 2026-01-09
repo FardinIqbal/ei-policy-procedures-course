@@ -31,10 +31,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.classList.toggle('light', newTheme === 'light');
   };
 
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
+  // Always provide context, even when not mounted (for SSR/SSG)
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}

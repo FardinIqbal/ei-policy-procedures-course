@@ -162,6 +162,26 @@ Don't just hand it over - walk through it with them. The parent who understands 
           'Keep Welcome Packets in your top 5 languages readily available. Don\'t make families wait for materials to arrive.',
           'If you can\'t reach a family after multiple attempts, document thoroughly and escalate to your supervisor. Some families need extra outreach support.',
         ],
+        quiz: [
+          {
+            question: 'What is the most important goal of your first contact with a family?',
+            options: ['Collecting all required documents', 'Building trust and explaining the EI process', 'Scheduling all evaluations', 'Verifying insurance information'],
+            correctIndex: 1,
+            explanation: 'While documentation is important, the first contact is primarily about building trust and helping an anxious family understand they\'re in good hands. A parent who trusts you becomes your partner in the process.',
+          },
+          {
+            question: 'What should you do if a family\'s preferred language isn\'t English?',
+            options: ['Proceed in English and speak slowly', 'Request an interpreter and provide materials in their language', 'Have them bring their own translator', 'Refer them to a different service coordinator'],
+            correctIndex: 1,
+            explanation: 'Language access is a right. Ensure all communications happen in the family\'s preferred language - Welcome Packets are available in multiple languages, and interpreters should be requested for meetings.',
+          },
+          {
+            question: 'Within how many days must you schedule an in-person meeting with a new family?',
+            options: ['2 business days', '5 calendar days', '7 calendar days', '14 calendar days'],
+            correctIndex: 2,
+            explanation: 'You must meet the family in person within 7 calendar days of assignment. This face-to-face meeting is where you explain rights, gather information, and begin understanding the family\'s unique situation.',
+          },
+        ],
       },
       {
         id: 'foster-care',
@@ -213,6 +233,26 @@ Foster care agencies have Education Liaisons or Foster Care Case Planners. These
           'When in doubt, call your Regional Office immediately. It\'s better to ask than to guess wrong.',
           'Birth parents may retain consent rights even when the child is in foster care. Always verify the current custody status.',
         ],
+        quiz: [
+          {
+            question: 'A child in foster care needs an IFSP. Who should sign the consent forms?',
+            options: ['The foster parent automatically', 'Whoever the caseworker says', 'You must verify who has legal authority to consent', 'The biological parent automatically'],
+            correctIndex: 2,
+            explanation: 'Never assume who can consent. You must verify the current custody status - it could be the biological parent, foster parent with specific authority, or a Surrogate Parent may need to be appointed.',
+          },
+          {
+            question: 'What forms should you use for a child in foster care?',
+            options: ['Standard EI forms', 'Foster Care Packet forms', 'Either set of forms is acceptable', 'Modified standard forms'],
+            correctIndex: 1,
+            explanation: 'Always use the Foster Care Packet forms for children in foster care. Standard forms may not be legally valid for these cases.',
+          },
+          {
+            question: 'What is a Surrogate Parent in the EI context?',
+            options: ['The foster parent', 'A court-appointed guardian', 'A person appointed to make educational decisions for the child', 'A biological relative'],
+            correctIndex: 2,
+            explanation: 'A Surrogate Parent is specifically appointed by the Regional Office to make educational decisions on behalf of a child when neither the biological nor foster parent has authority to consent.',
+          },
+        ],
       },
       {
         id: 'before-ifsp',
@@ -259,6 +299,26 @@ Before the IFSP meeting, make sure the family understands what the evaluation fo
           'Create a case checklist template with every required document. Check items off as you get them.',
           'Ask about insurance at your very first meeting with the family. Don\'t wait.',
           'If the family has no insurance, document this clearly in EI-Hub. "No insurance" is different from "insurance not collected."',
+        ],
+        quiz: [
+          {
+            question: 'What should you tell families who are worried about providing insurance information?',
+            options: ['Their insurance rates may increase', 'They will receive a bill for any uncovered services', 'EI services are completely free to families - no copays, no deductibles, no bills', 'They can choose not to provide it'],
+            correctIndex: 2,
+            explanation: 'EI services are free to families. Insurance is billed, but families never see a bill. No copays. No deductibles. Ever. This is protected by law.',
+          },
+          {
+            question: 'When is a prescription required for an evaluation?',
+            options: ['For all evaluations', 'Only for speech evaluations', 'For PT, OT, or Nursing evaluations', 'Never - prescriptions are only for services'],
+            correctIndex: 2,
+            explanation: 'If the evaluation team recommends PT, OT, or Nursing evaluation, you need a prescription from a physician or Nurse Practitioner before those evaluations can happen.',
+          },
+          {
+            question: 'Why should you review the MDE report with the family BEFORE the IFSP meeting?',
+            options: ['It\'s a regulatory requirement', 'So they don\'t hear complex developmental information for the first time at the meeting', 'To give them time to dispute the findings', 'To get their signature earlier'],
+            correctIndex: 1,
+            explanation: 'A prepared family can participate meaningfully in planning. Don\'t let them walk into the IFSP meeting hearing complex developmental information for the first time.',
+          },
         ],
       },
       {
@@ -319,6 +379,26 @@ The IFSP is not complete until the parent signs it. A parent who doesn't underst
           'Schedule meetings at times convenient for families, not just convenient for providers. Evening and weekend availability matters.',
           'If you sense a family doesn\'t understand something, stop and explain. An IFSP signed in confusion isn\'t a meaningful consent.',
         ],
+        quiz: [
+          {
+            question: 'Which of the following is an example of a well-written IFSP outcome?',
+            options: ['Improve speech', 'Get better at communication', 'Child will use 10 functional words by 6-month review', 'Work on language skills'],
+            correctIndex: 2,
+            explanation: 'IFSP outcomes must be specific and measurable. "Child will use 10 functional words by 6-month review" includes what, how many, and when - making progress trackable.',
+          },
+          {
+            question: 'Who MUST be present at an IFSP meeting?',
+            options: ['Only the Service Coordinator', 'Parent and Service Coordinator only', 'Parent, Service Coordinator, and someone who can speak to evaluation results', 'All providers who will deliver services'],
+            correctIndex: 2,
+            explanation: 'Required participants include the parent/guardian, the Service Coordinator, and someone who can speak to the evaluation results (evaluator or representative). Providers are optional but valuable.',
+          },
+          {
+            question: 'When is the IFSP considered complete?',
+            options: ['When all services are documented', 'When the Service Coordinator signs it', 'When the parent signs it', 'When it\'s uploaded to EI-Hub'],
+            correctIndex: 2,
+            explanation: 'The IFSP is not complete until the parent signs it. Services cannot begin until this happens. A parent who doesn\'t understand what they\'re signing isn\'t truly consenting.',
+          },
+        ],
       },
       {
         id: 'transition',
@@ -371,6 +451,26 @@ Families often don't realize EI has an expiration date until transition conversa
           'EI and CPSE are different systems. Help families understand that CPSE services may look different, but support continues.',
           'Some families will want to deny that transition is coming. Gentle persistence is key. They need to face this to prepare for it.',
         ],
+        quiz: [
+          {
+            question: 'When should transition planning begin for a child in Early Intervention?',
+            options: ['At age 2.5', 'At the IFSP meeting closest to age 2', '120 days before turning 3', '90 days before turning 3'],
+            correctIndex: 1,
+            explanation: 'Start transition planning at the IFSP meeting closest to the child\'s 2nd birthday. This gives you roughly a year to prepare - transition is a process, not an event.',
+          },
+          {
+            question: 'What happens to EI services when a child turns 3?',
+            options: ['Services continue for 6 more months', 'Services automatically transfer to CPSE', 'Services end completely on the birthday', 'Services continue until CPSE starts'],
+            correctIndex: 2,
+            explanation: 'EI services end the day a child turns 3. There is no extension, no exception, no grace period. If transition planning wasn\'t done, the child may have a gap in services.',
+          },
+          {
+            question: 'How many days before a child turns 3 must CPSE be notified?',
+            options: ['60 days', '90 days', '120 days', '180 days'],
+            correctIndex: 2,
+            explanation: 'You must notify CPSE at least 120 days before the child\'s third birthday. Missing this deadline can create a gap where the child ages out of EI but isn\'t enrolled in CPSE.',
+          },
+        ],
       },
       {
         id: 'insurance-billing',
@@ -421,6 +521,26 @@ Not every family has insurance. That's okay - the child still receives services.
           'If a family hesitates to share insurance info, acknowledge their concern, then clearly explain the no-cost protection.',
           'Check for Medicaid even if the family has private insurance. Many families are eligible for both.',
           'Ask about insurance changes at every periodic review. Job changes and life changes often bring new coverage.',
+        ],
+        quiz: [
+          {
+            question: 'What is the billing order for EI services?',
+            options: ['State funds first, then Medicaid, then private insurance', 'Private insurance first, then Medicaid, then state funds', 'Medicaid first, then private insurance, then state funds', 'State funds cover everything'],
+            correctIndex: 1,
+            explanation: 'EI services are billed in a specific cascade: private insurance first, then Medicaid covers what private insurance doesn\'t, then state funds fill remaining gaps.',
+          },
+          {
+            question: 'A family has no insurance. What happens?',
+            options: ['The child cannot receive EI services', 'The family must pay out of pocket', 'The child receives services and state funds cover the cost', 'Services are delayed until insurance is obtained'],
+            correctIndex: 2,
+            explanation: 'Not every family has insurance, and that\'s okay - the child still receives services. Document "no insurance" clearly in EI-Hub so billing is processed correctly.',
+          },
+          {
+            question: 'Why is accurate insurance collection important?',
+            options: ['To bill families correctly', 'To ensure the EI program remains financially sustainable', 'To determine service eligibility', 'To report to federal agencies'],
+            correctIndex: 1,
+            explanation: 'When insurance information is missing or incorrect, claims get denied. This creates administrative burden and reduces program funding, affecting the ability to serve future children.',
+          },
         ],
       },
     ],
@@ -475,6 +595,26 @@ Session notes must be submitted within the timeframe specified by your agency. D
           'Keep a running list of prescription expiration dates. Review it monthly.',
           'Communicate with the Service Coordinator the moment you see a timeline at risk. They may be able to help.',
         ],
+        quiz: [
+          {
+            question: 'The 30-day evaluation clock starts from:',
+            options: ['When you receive the assignment', 'The child\'s referral date', 'When you first meet the family', 'When the IFSP meeting is scheduled'],
+            correctIndex: 1,
+            explanation: 'The 30-day clock runs from the original referral date, not when you were assigned. The clock may already be running when you get the case.',
+          },
+          {
+            question: 'How long do you have to deliver a make-up session after a cancellation?',
+            options: ['1 week', '2 weeks', '30 days', 'By the next billing cycle'],
+            correctIndex: 1,
+            explanation: 'You have 2 weeks to deliver (not just schedule) a make-up session. This means you need flexibility in your schedule to accommodate make-ups.',
+          },
+          {
+            question: 'When do PT/OT/Nursing prescriptions need to be renewed?',
+            options: ['Every 6 months', 'Only at the Annual IFSP', 'When service authorization changes or at Annual IFSP', 'Only when the physician requests it'],
+            correctIndex: 2,
+            explanation: 'Prescriptions need renewal when service frequency or duration changes, or at the Annual IFSP. Track expiration dates carefully.',
+          },
+        ],
       },
       {
         id: 'evaluation-requirements',
@@ -525,6 +665,26 @@ The State found that supplemental evaluations were being used too liberally, add
           'Before accepting an MDE assignment, verify your team\'s composition can cover all 5 domains.',
           'If you can\'t fully assess a domain, document exactly why (child was sick, couldn\'t complete tasks, etc.) rather than leaving it blank.',
           'Remember: supplemental evaluations ARE allowed after the initial MDE, just not during it.',
+        ],
+        quiz: [
+          {
+            question: 'What changed about supplemental evaluations as of September 1, 2024?',
+            options: ['They became more common', 'They are now prohibited during the initial MDE', 'They require additional authorization', 'They must be completed within 15 days'],
+            correctIndex: 1,
+            explanation: 'No supplemental evaluations are permitted during the initial MDE process (except audiological). The MDE team must be comprehensive enough to assess all 5 developmental domains.',
+          },
+          {
+            question: 'How many developmental domains must the MDE team assess?',
+            options: ['3 domains', '4 domains', '5 domains', 'Depends on the child\'s needs'],
+            correctIndex: 2,
+            explanation: 'The MDE must assess all 5 domains: cognitive, physical (including vision/hearing), communication, social-emotional, and adaptive development.',
+          },
+          {
+            question: 'What is the ONLY type of supplemental evaluation permitted during the initial MDE?',
+            options: ['Speech evaluation', 'PT evaluation', 'Audiological evaluation', 'Psychological evaluation'],
+            correctIndex: 2,
+            explanation: 'Supplemental audiological evaluation is the only exception permitted during the initial MDE. No other supplementals are allowed until after eligibility is determined.',
+          },
         ],
       },
       {
@@ -577,6 +737,26 @@ Speech therapy doesn't require a prescription unless there's a feeding component
           'If the SC hasn\'t provided a script and the IFSP is about to start, advocate loudly. Don\'t let timeline pressure push you into unbillable work.',
           'Prescriptions from out-of-state physicians may have different requirements. When in doubt, verify with your agency.',
         ],
+        quiz: [
+          {
+            question: 'Which services require a prescription before you can provide them?',
+            options: ['All EI services', 'PT, OT, and Nursing', 'Only PT and OT', 'Only services over 30 minutes'],
+            correctIndex: 1,
+            explanation: 'PT, OT, and Nursing services require a valid prescription from a physician or Nurse Practitioner. Speech therapy only requires medical clearance if there\'s a feeding component.',
+          },
+          {
+            question: 'What happens if you provide PT services without a valid prescription?',
+            options: ['You get a warning', 'The service is billable but flagged', 'The service is not billable and you worked for free', 'The prescription can be obtained later'],
+            correctIndex: 2,
+            explanation: 'No script, no payment. Services provided without a valid prescription are not authorized and cannot be billed. You\'ve worked for free and may have liability exposure.',
+          },
+          {
+            question: 'When does speech therapy require medical clearance?',
+            options: ['Always', 'Never - speech doesn\'t need prescriptions', 'When there\'s a feeding component', 'Only for children under 12 months'],
+            correctIndex: 2,
+            explanation: 'Speech therapy doesn\'t require a prescription unless there\'s a feeding component. Working on oral motor skills, swallowing, or feeding requires medical clearance first.',
+          },
+        ],
       },
       {
         id: 'telehealth',
@@ -625,6 +805,26 @@ If the justification for telehealth no longer applies (family moves closer to a 
           'If a family requests telehealth, get the request in writing (even an email) and keep it with your documentation.',
           'Hybrid approaches (some telehealth, some in-person) can work when justified. Not every session needs the same modality.',
           'Technology fails. Have a backup plan for when video calls don\'t work.',
+        ],
+        quiz: [
+          {
+            question: 'Which of the following is a valid reason for providing telehealth instead of in-person services?',
+            options: ['Provider prefers working from home', 'Traffic was heavy that day', 'Family requested telehealth', 'It\'s more efficient for the provider'],
+            correctIndex: 2,
+            explanation: 'Valid telehealth justifications include: family request, complex medical needs, or no in-person provider available. Provider convenience is never a valid reason.',
+          },
+          {
+            question: 'What must be documented in every telehealth session note?',
+            options: ['Nothing extra - same as in-person notes', 'The specific reason why telehealth was used', 'The technology platform used', 'The family\'s internet speed'],
+            correctIndex: 1,
+            explanation: 'Every telehealth session note must document WHY telehealth was used. Notes without justification will be questioned in audits.',
+          },
+          {
+            question: 'What is the gold standard for EI service delivery?',
+            options: ['Telehealth for efficiency', 'In-person, in the child\'s natural environment', 'Clinic-based services', 'Whatever the family prefers'],
+            correctIndex: 1,
+            explanation: 'EI services are designed to happen where children live and learn - their homes, daycares, and daily environments. Telehealth is an exception, not the default.',
+          },
         ],
       },
       {
@@ -687,6 +887,26 @@ Cancelled sessions need documentation too. Note the date, who cancelled (provide
           'If you\'re doing telehealth, have a system for electronic signatures. Verbal "yes I approve" is not a signature.',
           'Don\'t let notes pile up. Write them the same day while the session is fresh.',
         ],
+        quiz: [
+          {
+            question: 'What is the single most common reason for claim denials in EI audits?',
+            options: ['Missing prescriptions', 'Incorrect billing codes', 'Missing parent signatures on session notes', 'Late submissions'],
+            correctIndex: 2,
+            explanation: 'Missing parent signatures are the most common audit finding. The parent or caregiver must sign the session note that day, that session - not later, not in a batch.',
+          },
+          {
+            question: 'What elements must EVERY session note include?',
+            options: ['Just the date and activities', 'Date, time, location, attendees, activities, progress, and parent signature', 'Activities and parent signature only', 'Date and progress notes'],
+            correctIndex: 1,
+            explanation: 'Complete session notes include: date, start/end time, location, who was present, activities performed, child\'s response/progress toward IFSP outcomes, and parent signature.',
+          },
+          {
+            question: 'Do cancelled sessions need documentation?',
+            options: ['No - only completed sessions need notes', 'Yes - note the date, who cancelled, and why', 'Only if the provider cancelled', 'Only if there were 3+ cancellations'],
+            correctIndex: 1,
+            explanation: 'Cancelled sessions need documentation too. Note the date, who cancelled (provider or family), and why. Undocumented cancellations are invisible and can\'t be properly tracked.',
+          },
+        ],
       },
       {
         id: 'makeup-sessions',
@@ -737,6 +957,26 @@ If a family repeatedly cancels and declines make-ups, this is information the Se
           'Keep 1-2 "make-up slots" open each week specifically for rescheduling. Don\'t fill every hour.',
           'When you cancel, immediately propose alternative times. Don\'t leave the make-up scheduling to later.',
           'If patterns emerge (every Tuesday gets cancelled), discuss schedule changes with the SC and family.',
+        ],
+        quiz: [
+          {
+            question: 'Within what timeframe must a make-up session be DELIVERED (not just scheduled)?',
+            options: ['1 week', '2 weeks', '30 days', 'Before the next billing cycle'],
+            correctIndex: 1,
+            explanation: 'Make-up sessions must be delivered within 2 weeks of the original missed session. "Offered" alone isn\'t enough - the make-up must actually happen.',
+          },
+          {
+            question: 'Why is tracking who initiated each cancellation important?',
+            options: ['For billing purposes only', 'To assign blame', 'To identify patterns that may indicate underlying issues', 'It\'s not important'],
+            correctIndex: 2,
+            explanation: 'Tracking whether provider or family cancelled helps identify patterns. Frequent family cancellations may indicate underlying issues (transportation, schedule, discomfort) that need addressing.',
+          },
+          {
+            question: 'Is it acceptable to stack two make-up sessions back-to-back in one day?',
+            options: ['Yes, always', 'Yes, if the family agrees', 'Only if clinically appropriate for the child', 'Never'],
+            correctIndex: 2,
+            explanation: 'Don\'t stack make-ups unless clinically appropriate. A child who normally gets 30-minute sessions twice a week shouldn\'t receive back-to-back sessions - that\'s administratively convenient but not good therapy.',
+          },
         ],
       },
       {
@@ -794,6 +1034,26 @@ When you get billing wrong repeatedly, the consequences compound.`,
           'Create a personal pre-billing checklist. Before submitting each session, verify every element.',
           'If you\'re unsure whether something is billable, ask your supervisor BEFORE providing the service.',
           'Keep your own records organized. Audits can look back several years. You need to be able to find documentation from 2022 if asked.',
+        ],
+        quiz: [
+          {
+            question: 'Before billing a PT session, which elements must ALL be in place?',
+            options: ['Just the session note and signature', 'IFSP authorization, valid prescription, complete session note, and parent signature', 'IFSP authorization and session note only', 'Prescription and progress notes'],
+            correctIndex: 1,
+            explanation: 'A billable session requires: current IFSP authorization, valid prescription (for PT/OT/Nursing), complete session note with all elements, and parent signature. Missing any one makes the session unbillable.',
+          },
+          {
+            question: 'What happens during an EI audit if documentation is incomplete?',
+            options: ['You get a warning', 'Claim is denied and payment may be recouped', 'You can submit the missing documentation', 'Nothing - audits are just reviews'],
+            correctIndex: 1,
+            explanation: 'Auditors verify each element. One missing piece = claim denied = payment recouped. For sessions already paid, your agency may have to return the money.',
+          },
+          {
+            question: 'Can you bill for a session provided before the IFSP is signed?',
+            options: ['Yes, if the family verbally agreed', 'Yes, as long as you document it', 'No - services before IFSP signing are not billable', 'Yes, with supervisor approval'],
+            correctIndex: 2,
+            explanation: 'Services delivered before the IFSP is signed are not billable. The IFSP must be signed and current for services to be authorized and billable.',
+          },
         ],
       },
     ],

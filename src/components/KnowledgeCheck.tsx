@@ -11,7 +11,9 @@ export interface QuizQuestion {
 
 interface KnowledgeCheckProps {
   questions: QuizQuestion[];
-  onComplete?: () => void;
+  onComplete?: (correct: number, total: number) => void;
+  onAdvanceToNext?: () => void;
+  hasNextModule?: boolean;
 }
 
 function CheckIcon() {
@@ -31,11 +33,20 @@ function XIcon() {
   );
 }
 
-export default function KnowledgeCheck({ questions, onComplete }: KnowledgeCheckProps) {
+function ChevronRightIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  );
+}
+
+export default function KnowledgeCheck({ questions, onComplete, onAdvanceToNext, hasNextModule }: KnowledgeCheckProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
 
   if (questions.length === 0) return null;
 
@@ -51,12 +62,16 @@ export default function KnowledgeCheck({ questions, onComplete }: KnowledgeCheck
   const handleCheckAnswer = () => {
     if (selectedAnswer === null) return;
     setShowResult(true);
+    if (selectedAnswer === question.correctIndex) {
+      setCorrectAnswers(prev => prev + 1);
+    }
   };
 
   const handleNext = () => {
     if (isLastQuestion) {
+      const finalCorrect = selectedAnswer === question.correctIndex ? correctAnswers : correctAnswers;
       setCompleted(true);
-      onComplete?.();
+      onComplete?.(finalCorrect, questions.length);
     } else {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
@@ -65,12 +80,34 @@ export default function KnowledgeCheck({ questions, onComplete }: KnowledgeCheck
   };
 
   if (completed) {
+    const percentage = Math.round((correctAnswers / questions.length) * 100);
     return (
       <div className="border border-[var(--border)] bg-[var(--surface)] p-6">
-        <p className="text-sm text-[var(--foreground-subtle)] mb-2">Knowledge Check</p>
-        <p className="text-[var(--foreground)]">
-          You have completed the knowledge verification for this chapter.
+        <p className="text-sm text-[var(--foreground-subtle)] mb-2">Knowledge Check Complete</p>
+        <div className="flex items-center gap-4 mb-4">
+          <div className="text-2xl font-display text-[var(--foreground)]">
+            {correctAnswers}/{questions.length}
+          </div>
+          <div className="text-sm text-[var(--foreground-muted)]">
+            {percentage}% correct
+          </div>
+        </div>
+        <p className="text-[var(--foreground-muted)] mb-4">
+          {percentage >= 80
+            ? 'Excellent work! You\'ve demonstrated strong understanding of this material.'
+            : percentage >= 60
+            ? 'Good effort! Consider reviewing the sections you missed.'
+            : 'You may want to review this chapter before continuing.'}
         </p>
+        {hasNextModule && onAdvanceToNext && (
+          <button
+            onClick={onAdvanceToNext}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-opacity"
+          >
+            Continue to Next Chapter
+            <ChevronRightIcon />
+          </button>
+        )}
       </div>
     );
   }
