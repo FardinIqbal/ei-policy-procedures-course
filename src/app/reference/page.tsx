@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { quickReference } from '@/lib/content';
+import { ThemeToggle } from '@/components/ThemeProvider';
 
 function BookIcon() {
   return (
@@ -116,13 +117,16 @@ export default function ReferencePage() {
               <span className="font-medium text-[var(--foreground)]">Quick Reference</span>
             </div>
           </div>
-          <button
-            onClick={handlePrint}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[var(--surface)] hover:bg-[var(--surface-hover)] text-[var(--foreground)] border border-[var(--border)] transition-colors"
-          >
-            <PrinterIcon />
-            Print Cards
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handlePrint}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[var(--surface)] hover:bg-[var(--surface-hover)] text-[var(--foreground)] border border-[var(--border)] transition-colors"
+            >
+              <PrinterIcon />
+              Print Cards
+            </button>
+            <ThemeToggle />
+          </div>
         </div>
       </motion.header>
 

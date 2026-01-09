@@ -1,30 +1,65 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
 @import "tailwindcss";
 
+/* Warm Dark Mode (default) */
 :root {
-  --background: #09090b;
-  --background-subtle: #18181b;
-  --surface: #1c1c1f;
-  --surface-hover: #27272a;
-  --border: #27272a;
-  --border-subtle: #3f3f46;
+  --background: #1a1614;
+  --background-subtle: #231f1c;
+  --surface: #2a2522;
+  --surface-hover: #352f2b;
+  --border: #3d3632;
+  --border-subtle: #524a44;
 
-  --foreground: #fafafa;
-  --foreground-muted: #a1a1aa;
-  --foreground-subtle: #71717a;
+  --foreground: #f5f0eb;
+  --foreground-muted: #b8aea3;
+  --foreground-subtle: #8a7f73;
 
-  --accent: #f59e0b;
-  --accent-hover: #fbbf24;
-  --accent-muted: rgba(245, 158, 11, 0.15);
+  --accent: #e8a849;
+  --accent-hover: #f0b85a;
+  --accent-muted: rgba(232, 168, 73, 0.15);
 
-  --success: #10b981;
-  --success-muted: rgba(16, 185, 129, 0.15);
+  --success: #5cb88f;
+  --success-muted: rgba(92, 184, 143, 0.15);
 
-  --teal: #14b8a6;
-  --teal-muted: rgba(20, 184, 166, 0.15);
+  --teal: #4eb3a5;
+  --teal-muted: rgba(78, 179, 165, 0.15);
+
+  --red: #d9735c;
+  --red-muted: rgba(217, 115, 92, 0.12);
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
+
+  color-scheme: dark;
+}
+
+/* Warm Light Mode */
+.light {
+  --background: #faf7f4;
+  --background-subtle: #f3ede7;
+  --surface: #ffffff;
+  --surface-hover: #f7f3ef;
+  --border: #e8e0d8;
+  --border-subtle: #d4c9bd;
+
+  --foreground: #2d2520;
+  --foreground-muted: #6b5d52;
+  --foreground-subtle: #9a8b7d;
+
+  --accent: #c4852e;
+  --accent-hover: #a87025;
+  --accent-muted: rgba(196, 133, 46, 0.12);
+
+  --success: #3d9970;
+  --success-muted: rgba(61, 153, 112, 0.12);
+
+  --teal: #2d9485;
+  --teal-muted: rgba(45, 148, 133, 0.12);
+
+  --red: #c45a42;
+  --red-muted: rgba(196, 90, 66, 0.1);
+
+  color-scheme: light;
 }
 
 @theme inline {
@@ -44,6 +79,8 @@
   --color-success-muted: var(--success-muted);
   --color-teal: var(--teal);
   --color-teal-muted: var(--teal-muted);
+  --color-red: var(--red);
+  --color-red-muted: var(--red-muted);
 }
 
 * {
@@ -58,11 +95,12 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
-  line-height: 1.6;
+  line-height: 1.7;
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Noise texture overlay */
+/* Subtle paper texture */
 body::before {
   content: '';
   position: fixed;
@@ -70,33 +108,105 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.015;
   pointer-events: none;
   z-index: 9999;
 }
 
-/* Gradient background */
+.light body::before {
+  opacity: 0.03;
+}
+
+/* Warm gradient background */
 .gradient-bg {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245, 158, 11, 0.12), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(20, 184, 166, 0.08), transparent),
+    radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-muted), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%, var(--teal-muted), transparent),
     var(--background);
 }
 
 /* Typography */
 .font-display {
   font-family: var(--font-display);
+  font-optical-sizing: auto;
 }
 
 .font-body {
   font-family: var(--font-body);
 }
 
+/* Editorial prose styling */
+.prose-editorial {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  letter-spacing: -0.01em;
+}
+
+.prose-editorial p {
+  margin-bottom: 1.5em;
+}
+
+.prose-editorial strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.prose-editorial ul, .prose-editorial ol {
+  margin-left: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.prose-editorial li {
+  margin-bottom: 0.5em;
+}
+
+/* Pull quote styling */
+.pull-quote {
+  position: relative;
+  padding: 2rem 0;
+  margin: 2.5rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.pull-quote::before {
+  content: '"';
+  position: absolute;
+  top: 1rem;
+  left: -0.5rem;
+  font-family: var(--font-display);
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.3;
+}
+
+.pull-quote p {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+
+/* Drop cap for opening paragraphs */
+.drop-cap::first-letter {
+  float: left;
+  font-family: var(--font-display);
+  font-size: 4rem;
+  line-height: 0.8;
+  padding-right: 0.5rem;
+  padding-top: 0.2rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -105,7 +215,8 @@ body::before {
 
 ::-webkit-scrollbar-thumb {
   background: var(--border-subtle);
-  border-radius: 4px;
+  border-radius: 5px;
+  border: 2px solid var(--background-subtle);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -151,16 +262,32 @@ body::before {
   animation: fade-in-up 0.5s ease-out forwards;
 }
 
-/* Glow effect */
+/* Glow effects */
 .glow-accent {
-  box-shadow: 0 0 40px -10px var(--accent);
+  box-shadow: 0 0 50px -15px var(--accent);
 }
 
 .glow-teal {
-  box-shadow: 0 0 40px -10px var(--teal);
+  box-shadow: 0 0 50px -15px var(--teal);
 }
 
-/* Print styles for reference cards */
+/* Markdown content from narrative */
+.narrative-content h2,
+.narrative-content strong {
+  color: var(--foreground);
+}
+
+.narrative-content ul {
+  list-style: disc;
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.narrative-content li {
+  margin-bottom: 0.5rem;
+}
+
+/* Print styles */
 @media print {
   body::before {
     display: none;
@@ -177,5 +304,20 @@ body::before {
   body {
     background: white !important;
     color: black !important;
+  }
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+  .prose-editorial {
+    font-size: 1rem;
+  }
+
+  .pull-quote p {
+    font-size: 1.25rem;
+  }
+
+  .drop-cap::first-letter {
+    font-size: 3rem;
   }
 }

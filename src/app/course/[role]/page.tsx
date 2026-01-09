@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { getTrack, Role } from '@/lib/content';
 import { getCompletedModules, getCompletionPercentage, getEstimatedTimeRemaining } from '@/lib/progress';
+import { ThemeToggle } from '@/components/ThemeProvider';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -259,12 +260,15 @@ export default function CourseDashboard() {
               <span className="font-medium text-[var(--foreground)]">{track.title}</span>
             </div>
           </div>
-          <Link
-            href="/reference"
-            className="text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
-          >
-            Quick Reference
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/reference"
+              className="text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+            >
+              Quick Reference
+            </Link>
+            <ThemeToggle />
+          </div>
         </div>
       </motion.header>
 
