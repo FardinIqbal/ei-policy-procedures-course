@@ -3,14 +3,17 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState, lazy, Suspense } from 'react';
-import { getTrack, getModule, Role, PolicyRef, QuizQuestion } from '@/lib/content';
+import { useEffect, useState, lazy, Suspense, useCallback, useRef } from 'react';
+import { getTrack, getModule, Role, PolicyRef } from '@/lib/content';
 import KnowledgeCheck from '@/components/KnowledgeCheck';
 import { isModuleComplete, markModuleComplete, markModuleIncomplete } from '@/lib/progress';
 import { ThemeToggle } from '@/components/ThemeProvider';
 
-// Lazy load PDF viewer to avoid SSR issues
 const PDFViewer = lazy(() => import('@/components/PDFViewer'));
+
+const MIN_SIDEBAR_WIDTH = 320;
+const MAX_SIDEBAR_WIDTH = 800;
+const DEFAULT_SIDEBAR_WIDTH = 480;
 
 function ChevronLeftIcon() {
   return (
@@ -32,15 +35,6 @@ function CheckIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
-
-function XIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
   );
 }
@@ -80,12 +74,67 @@ export default function ChapterView() {
   const [isComplete, setIsComplete] = useState(false);
   const [showPDF, setShowPDF] = useState(false);
   const [pdfPage, setPdfPage] = useState(1);
+  const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartX = useRef(0);
+  const dragStartWidth = useRef(DEFAULT_SIDEBAR_WIDTH);
 
   useEffect(() => {
     if (module) {
       setIsComplete(isModuleComplete(role, module.id));
     }
   }, [role, module]);
+
+  // Prevent body scroll when PDF modal is open on mobile
+  useEffect(() => {
+    if (showPDF) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showPDF]);
+
+  // Handle drag resize
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    dragStartX.current = e.clientX;
+    dragStartWidth.current = sidebarWidth;
+  }, [sidebarWidth]);
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging) return;
+    const delta = dragStartX.current - e.clientX;
+    const newWidth = Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, dragStartWidth.current + delta));
+    setSidebarWidth(newWidth);
+  }, [isDragging]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isDragging, handleMouseMove, handleMouseUp]);
 
   if (!track || !module) {
     return (
@@ -126,7 +175,6 @@ export default function ChapterView() {
     setShowPDF(true);
   };
 
-  // Parse markdown-like formatting in narrative
   const renderNarrative = (text: string) => {
     const parts = text.split(/(\*\*[^*]+\*\*)/g);
     return parts.map((part, i) => {
@@ -138,13 +186,16 @@ export default function ChapterView() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen">
       {/* Main Content */}
-      <div className={`flex-1 transition-all duration-300 ${showPDF ? 'mr-[480px]' : ''}`}>
+      <div
+        className={`${isDragging ? '' : 'transition-all duration-300'}`}
+        style={{ marginRight: showPDF ? `${sidebarWidth}px` : 0 }}
+      >
         {/* Header */}
         <header
-          className="fixed top-0 left-0 z-40 bg-[var(--background)] border-b border-[var(--border)]"
-          style={{ right: showPDF ? '480px' : '0' }}
+          className={`fixed top-0 left-0 z-40 bg-[var(--background)] border-b border-[var(--border)] ${isDragging ? '' : 'transition-all duration-300'}`}
+          style={{ right: showPDF ? `${sidebarWidth}px` : 0 }}
         >
           <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
             <Link
@@ -161,7 +212,6 @@ export default function ChapterView() {
               <ThemeToggle />
             </div>
           </div>
-          {/* Progress bar */}
           <div className="h-0.5 bg-[var(--border)]">
             <motion.div
               initial={{ width: 0 }}
@@ -239,7 +289,7 @@ export default function ChapterView() {
                         : 'border-[var(--border)] bg-[var(--surface)]'
                     }`}
                   >
-                    <div className="w-4 h-4 mt-0.5 border border-[var(--border-subtle)] rounded-sm shrink-0" />
+                    <div className="w-4 h-4 mt-0.5 border border-[var(--border-subtle)] shrink-0" />
                     <div className="flex-1">
                       <p className={item.critical ? 'text-[var(--foreground)]' : 'text-[var(--foreground-muted)]'}>
                         {item.text}
@@ -294,6 +344,16 @@ export default function ChapterView() {
               </div>
             </motion.section>
 
+            {/* Knowledge Check */}
+            {module.quiz && module.quiz.length > 0 && (
+              <motion.section variants={itemVariants} className="mb-10">
+                <h2 className="text-sm text-[var(--foreground-subtle)] mb-4 tracking-wide uppercase">
+                  Verify Your Understanding
+                </h2>
+                <KnowledgeCheck questions={module.quiz} />
+              </motion.section>
+            )}
+
             {/* Complete Section */}
             <motion.div variants={itemVariants} className="pt-8 border-t border-[var(--border)]">
               <button
@@ -319,8 +379,8 @@ export default function ChapterView() {
 
         {/* Bottom Navigation */}
         <div
-          className="fixed bottom-0 left-0 bg-[var(--background)] border-t border-[var(--border)] py-4 px-6"
-          style={{ right: showPDF ? '480px' : '0' }}
+          className={`fixed bottom-0 left-0 bg-[var(--background)] border-t border-[var(--border)] py-4 px-6 ${isDragging ? '' : 'transition-all duration-300'}`}
+          style={{ right: showPDF ? `${sidebarWidth}px` : 0 }}
         >
           <div className="max-w-2xl mx-auto flex items-center justify-between">
             {prevModule ? (
@@ -329,7 +389,7 @@ export default function ChapterView() {
                 className="flex items-center gap-1 text-sm text-[var(--foreground-subtle)] hover:text-[var(--foreground-muted)] transition-colors"
               >
                 <ChevronLeftIcon />
-                Previous
+                <span className="hidden sm:inline">Previous</span>
               </Link>
             ) : (
               <div />
@@ -348,7 +408,7 @@ export default function ChapterView() {
                 href={`/course/${role}/${nextModule.id}`}
                 className="flex items-center gap-1 text-sm text-[var(--foreground-subtle)] hover:text-[var(--foreground-muted)] transition-colors"
               >
-                Next
+                <span className="hidden sm:inline">Next</span>
                 <ChevronRightIcon />
               </Link>
             ) : (
@@ -358,25 +418,41 @@ export default function ChapterView() {
         </div>
       </div>
 
-      {/* PDF Sidebar */}
+      {/* PDF Panel - Desktop: Resizable Sidebar, Mobile: Full-screen modal */}
       {showPDF && (
-        <aside className="fixed top-0 right-0 bottom-0 w-[480px] z-50 bg-[var(--background)] border-l border-[var(--border)]">
-          <div className="absolute top-4 left-4 z-10">
-            <button
-              onClick={() => setShowPDF(false)}
-              className="p-2 bg-[var(--surface)] hover:bg-[var(--surface-hover)] text-[var(--foreground-muted)] transition-colors border border-[var(--border)]"
+        <>
+          {/* Desktop Sidebar with Drag Handle */}
+          <aside
+            className="hidden lg:block fixed top-0 right-0 bottom-0 z-50 bg-[var(--background)]"
+            style={{ width: `${sidebarWidth}px` }}
+          >
+            {/* Drag Handle */}
+            <div
+              onMouseDown={handleMouseDown}
+              className="absolute top-0 left-0 bottom-0 w-1 cursor-col-resize group z-10 hover:bg-[var(--accent)] transition-colors"
             >
-              <XIcon />
-            </button>
-          </div>
-          <Suspense fallback={
-            <div className="flex items-center justify-center h-full">
-              <p className="text-sm text-[var(--foreground-subtle)]">Loading...</p>
+              <div className={`absolute top-1/2 -translate-y-1/2 left-0 w-1 h-16 rounded-full transition-colors ${isDragging ? 'bg-[var(--accent)]' : 'bg-[var(--border-subtle)] group-hover:bg-[var(--accent)]'}`} />
             </div>
-          }>
-            <PDFViewer pageNumber={pdfPage} onClose={() => setShowPDF(false)} />
-          </Suspense>
-        </aside>
+            <Suspense fallback={
+              <div className="flex items-center justify-center h-full">
+                <div className="w-6 h-6 border-2 border-[var(--foreground-subtle)] border-t-transparent rounded-full animate-spin" />
+              </div>
+            }>
+              <PDFViewer pageNumber={pdfPage} onClose={() => setShowPDF(false)} />
+            </Suspense>
+          </aside>
+
+          {/* Mobile Full-screen Modal */}
+          <div className="lg:hidden fixed inset-0 z-50 bg-[var(--background)]">
+            <Suspense fallback={
+              <div className="flex items-center justify-center h-full">
+                <div className="w-6 h-6 border-2 border-[var(--foreground-subtle)] border-t-transparent rounded-full animate-spin" />
+              </div>
+            }>
+              <PDFViewer pageNumber={pdfPage} onClose={() => setShowPDF(false)} />
+            </Suspense>
+          </div>
+        </>
       )}
     </div>
   );

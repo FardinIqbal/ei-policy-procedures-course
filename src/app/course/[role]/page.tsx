@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { getTrack, Role } from '@/lib/content';
 import { getCompletedModules, getCompletionPercentage } from '@/lib/progress';
 import { ThemeToggle } from '@/components/ThemeProvider';
+import Certificate from '@/components/Certificate';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -211,24 +212,26 @@ export default function CourseDashboard() {
             </div>
           </motion.div>
 
-          {/* Completion Notice */}
+          {/* Certificate */}
           {percentage === 100 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="mt-12 p-6 border border-[var(--border)] bg-[var(--surface)]"
+              className="mt-12"
             >
-              <h3 className="font-display text-lg text-[var(--foreground)] mb-2">
-                Certification Available
-              </h3>
-              <p className="text-sm text-[var(--foreground-muted)] mb-4">
-                You have completed all chapters in the {track.title} track.
-                Your certificate of completion is ready.
-              </p>
-              <button className="text-sm text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors">
-                View Certificate
-              </button>
+              <h2 className="text-sm text-[var(--foreground-subtle)] mb-4 tracking-wide uppercase">
+                Certificate of Completion
+              </h2>
+              <Certificate
+                trackTitle={track.title}
+                completionDate={new Date().toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+                chaptersCompleted={track.modules.length}
+              />
             </motion.div>
           )}
         </div>

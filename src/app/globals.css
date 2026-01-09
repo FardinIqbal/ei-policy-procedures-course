@@ -3,30 +3,30 @@
 
 /* Premium Dark Mode (default) */
 :root {
-  --background: #111110;
-  --background-subtle: #1a1918;
-  --surface: #1f1e1d;
-  --surface-hover: #282726;
+  --background: #0f0f0e;
+  --background-subtle: #171716;
+  --surface: #1c1b1a;
+  --surface-hover: #242322;
 
-  --border: #2d2c2a;
-  --border-subtle: #3d3b38;
+  --border: #2a2928;
+  --border-subtle: #383634;
 
-  --foreground: #f5f3ef;
-  --foreground-muted: #a39e93;
-  --foreground-subtle: #6b6660;
+  --foreground: #f7f5f2;
+  --foreground-muted: #9e9a92;
+  --foreground-subtle: #666360;
 
-  --accent: #b8952f;
-  --accent-hover: #c9a63d;
-  --accent-muted: rgba(184, 149, 47, 0.08);
+  --accent: #8b3a3a;
+  --accent-hover: #a04545;
+  --accent-muted: rgba(139, 58, 58, 0.1);
 
-  --success: #6b8f71;
-  --success-muted: rgba(107, 143, 113, 0.08);
+  --success: #5a7a5e;
+  --success-muted: rgba(90, 122, 94, 0.1);
 
-  --teal: #5a8f8b;
-  --teal-muted: rgba(90, 143, 139, 0.08);
+  --teal: #4a6a6a;
+  --teal-muted: rgba(74, 106, 106, 0.1);
 
-  --red: #a65d50;
-  --red-muted: rgba(166, 93, 80, 0.08);
+  --red: #8b4a4a;
+  --red-muted: rgba(139, 74, 74, 0.1);
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
@@ -36,30 +36,30 @@
 
 /* Premium Light Mode */
 .light {
-  --background: #faf9f6;
-  --background-subtle: #f4f2ee;
+  --background: #faf9f7;
+  --background-subtle: #f4f2ef;
   --surface: #ffffff;
-  --surface-hover: #f7f5f1;
+  --surface-hover: #f7f5f2;
 
-  --border: #e8e4dd;
-  --border-subtle: #d4cfc4;
+  --border: #e5e2dc;
+  --border-subtle: #d0ccc4;
 
-  --foreground: #1c1b19;
-  --foreground-muted: #5c5850;
-  --foreground-subtle: #8a857b;
+  --foreground: #1a1918;
+  --foreground-muted: #5a5752;
+  --foreground-subtle: #8a867e;
 
-  --accent: #8b6914;
-  --accent-hover: #725510;
-  --accent-muted: rgba(139, 105, 20, 0.06);
+  --accent: #6b2a2a;
+  --accent-hover: #5a2323;
+  --accent-muted: rgba(107, 42, 42, 0.08);
 
-  --success: #4a7350;
-  --success-muted: rgba(74, 115, 80, 0.08);
+  --success: #4a6a4e;
+  --success-muted: rgba(74, 106, 78, 0.08);
 
-  --teal: #3d6b68;
-  --teal-muted: rgba(61, 107, 104, 0.08);
+  --teal: #3a5a5a;
+  --teal-muted: rgba(58, 90, 90, 0.08);
 
-  --red: #8b4a3d;
-  --red-muted: rgba(139, 74, 61, 0.06);
+  --red: #6b3a3a;
+  --red-muted: rgba(107, 58, 58, 0.06);
 
   color-scheme: light;
 }
