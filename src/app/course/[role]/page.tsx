@@ -9,6 +9,7 @@ import { getCompletedModules, getCompletionPercentage, getTotalTimeSpent, format
 import { ThemeToggle } from '@/components/ThemeProvider';
 import Certificate from '@/components/Certificate';
 import ProgressReport from '@/components/ProgressReport';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -282,7 +283,9 @@ export default function CourseDashboard() {
               <h2 className="text-sm text-[var(--foreground-subtle)] mb-4 tracking-wide uppercase">
                 Progress Report
               </h2>
-              <ProgressReport role={role} />
+              <ErrorBoundary>
+                <ProgressReport role={role} />
+              </ErrorBoundary>
             </motion.div>
           )}
 
@@ -297,15 +300,19 @@ export default function CourseDashboard() {
               <h2 className="text-sm text-[var(--foreground-subtle)] mb-4 tracking-wide uppercase">
                 Certificate of Completion
               </h2>
-              <Certificate
-                trackTitle={track.title}
-                completionDate={new Date().toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-                chaptersCompleted={track.modules.length}
-              />
+              <ErrorBoundary>
+                <Certificate
+                  trackTitle={track.title}
+                  completionDate={new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                  chaptersCompleted={track.modules.length}
+                  quizScore={quizStats.total > 0 ? quizStats.percentage : undefined}
+                  role={role}
+                />
+              </ErrorBoundary>
             </motion.div>
           )}
         </div>

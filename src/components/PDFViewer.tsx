@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+import { quickReference } from '@/lib/content';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -80,6 +81,22 @@ function ShrinkIcon() {
   );
 }
 
+function ChevronDownIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
+
+function BookmarkIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
 export default function PDFViewer({ pageNumber: initialPage, onClose }: PDFViewerProps) {
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState(initialPage);
@@ -88,12 +105,25 @@ export default function PDFViewer({ pageNumber: initialPage, onClose }: PDFViewe
   const [zoom, setZoom] = useState(1);
   const [fitToWidth, setFitToWidth] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showQuickJump, setShowQuickJump] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const fullscreenRef = useRef<HTMLDivElement>(null);
+  const quickJumpRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setPageNumber(initialPage);
   }, [initialPage]);
+
+  // Close quick jump dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (quickJumpRef.current && !quickJumpRef.current.contains(e.target as Node)) {
+        setShowQuickJump(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Use ResizeObserver to detect container size changes
   useEffect(() => {
@@ -208,6 +238,11 @@ export default function PDFViewer({ pageNumber: initialPage, onClose }: PDFViewe
     }
   };
 
+  const handleQuickJump = (page: number) => {
+    setPageNumber(page);
+    setShowQuickJump(false);
+  };
+
   const pdfWidth = fitToWidth ? containerWidth : containerWidth * zoom;
 
   const renderContent = (ref: React.RefObject<HTMLDivElement | null>) => (
@@ -238,6 +273,36 @@ export default function PDFViewer({ pageNumber: initialPage, onClose }: PDFViewe
             <p className="text-xs text-[var(--foreground-subtle)]">
               Page {pageNumber} of {numPages || '...'}
             </p>
+          </div>
+
+          {/* Quick Jump Dropdown */}
+          <div className="relative" ref={quickJumpRef}>
+            <button
+              onClick={() => setShowQuickJump(!showQuickJump)}
+              aria-label="Quick jump to section"
+              aria-expanded={showQuickJump}
+              className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] text-xs bg-[var(--surface-hover)] hover:bg-[var(--border)] text-[var(--foreground-muted)] transition-colors"
+            >
+              <BookmarkIcon />
+              <span className="hidden sm:inline">Quick Jump</span>
+              <ChevronDownIcon />
+            </button>
+            {showQuickJump && (
+              <div className="absolute top-full left-0 mt-1 w-64 max-h-80 overflow-y-auto bg-[var(--surface)] border border-[var(--border)] shadow-lg z-50">
+                {quickReference.policyJumpPoints.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleQuickJump(item.page)}
+                    className="w-full text-left px-3 py-2 hover:bg-[var(--surface-hover)] transition-colors border-b border-[var(--border)] last:border-b-0"
+                  >
+                    <p className="text-sm text-[var(--foreground)]">{item.label}</p>
+                    <p className="text-xs text-[var(--foreground-subtle)]">
+                      {item.policy} &middot; Page {item.page}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 export interface QuizQuestion {
   question: string;
@@ -14,6 +14,16 @@ interface KnowledgeCheckProps {
   onComplete?: (correct: number, total: number) => void;
   onAdvanceToNext?: () => void;
   hasNextModule?: boolean;
+}
+
+// Shuffle array using Fisher-Yates algorithm
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 }
 
 function CheckIcon() {
@@ -42,17 +52,20 @@ function ChevronRightIcon() {
 }
 
 export default function KnowledgeCheck({ questions, onComplete, onAdvanceToNext, hasNextModule }: KnowledgeCheckProps) {
+  // Randomize question order on mount
+  const shuffledQuestions = useMemo(() => shuffleArray(questions), [questions]);
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
 
-  if (questions.length === 0) return null;
+  if (shuffledQuestions.length === 0) return null;
 
-  const question = questions[currentQuestion];
+  const question = shuffledQuestions[currentQuestion];
   const isCorrect = selectedAnswer === question.correctIndex;
-  const isLastQuestion = currentQuestion === questions.length - 1;
+  const isLastQuestion = currentQuestion === shuffledQuestions.length - 1;
 
   const handleSelectAnswer = (index: number) => {
     if (showResult) return;
@@ -69,9 +82,8 @@ export default function KnowledgeCheck({ questions, onComplete, onAdvanceToNext,
 
   const handleNext = () => {
     if (isLastQuestion) {
-      const finalCorrect = selectedAnswer === question.correctIndex ? correctAnswers : correctAnswers;
       setCompleted(true);
-      onComplete?.(finalCorrect, questions.length);
+      onComplete?.(correctAnswers, shuffledQuestions.length);
     } else {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
@@ -80,13 +92,13 @@ export default function KnowledgeCheck({ questions, onComplete, onAdvanceToNext,
   };
 
   if (completed) {
-    const percentage = Math.round((correctAnswers / questions.length) * 100);
+    const percentage = Math.round((correctAnswers / shuffledQuestions.length) * 100);
     return (
-      <div className="border border-[var(--border)] bg-[var(--surface)] p-6">
+      <div className="border border-[var(--border)] bg-[var(--surface)] p-6" role="region" aria-label="Quiz results">
         <p className="text-sm text-[var(--foreground-subtle)] mb-2">Knowledge Check Complete</p>
         <div className="flex items-center gap-4 mb-4">
           <div className="text-2xl font-display text-[var(--foreground)]">
-            {correctAnswers}/{questions.length}
+            {correctAnswers}/{shuffledQuestions.length}
           </div>
           <div className="text-sm text-[var(--foreground-muted)]">
             {percentage}% correct
@@ -113,20 +125,20 @@ export default function KnowledgeCheck({ questions, onComplete, onAdvanceToNext,
   }
 
   return (
-    <div className="border border-[var(--border)] bg-[var(--surface)]">
+    <div className="border border-[var(--border)] bg-[var(--surface)]" role="region" aria-label="Knowledge check quiz">
       {/* Header */}
       <div className="px-6 py-4 border-b border-[var(--border)]">
         <p className="text-sm text-[var(--foreground-subtle)]">
-          Verify Your Understanding &middot; Question {currentQuestion + 1} of {questions.length}
+          Verify Your Understanding &middot; Question {currentQuestion + 1} of {shuffledQuestions.length}
         </p>
       </div>
 
       {/* Question */}
       <div className="p-6">
-        <p className="text-[var(--foreground)] mb-6">{question.question}</p>
+        <p id={`question-${currentQuestion}`} className="text-[var(--foreground)] mb-6">{question.question}</p>
 
         {/* Options */}
-        <div className="space-y-2 mb-6">
+        <div className="space-y-2 mb-6" role="radiogroup" aria-labelledby={`question-${currentQuestion}`}>
           {question.options.map((option, index) => {
             let borderColor = 'border-[var(--border)]';
             let bgColor = 'bg-transparent';
@@ -153,7 +165,10 @@ export default function KnowledgeCheck({ questions, onComplete, onAdvanceToNext,
                 key={index}
                 onClick={() => handleSelectAnswer(index)}
                 disabled={showResult}
-                className={`w-full flex items-center gap-3 p-4 border ${borderColor} ${bgColor} text-left transition-colors ${
+                role="radio"
+                aria-checked={index === selectedAnswer}
+                aria-label={`Option ${index + 1}: ${option}`}
+                className={`w-full flex items-center gap-3 min-h-[44px] p-4 border ${borderColor} ${bgColor} text-left transition-colors ${
                   !showResult ? 'hover:border-[var(--border-subtle)] hover:bg-[var(--surface-hover)]' : ''
                 }`}
               >
@@ -165,7 +180,7 @@ export default function KnowledgeCheck({ questions, onComplete, onAdvanceToNext,
                     : index === selectedAnswer
                     ? 'border-[var(--foreground-muted)]'
                     : 'border-[var(--border-subtle)]'
-                }`}>
+                }`} aria-hidden="true">
                   {showResult && index === question.correctIndex && <CheckIcon />}
                   {showResult && index === selectedAnswer && !isCorrect && <XIcon />}
                 </div>

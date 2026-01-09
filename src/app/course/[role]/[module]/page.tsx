@@ -8,6 +8,8 @@ import { getTrack, getModule, Role, PolicyRef } from '@/lib/content';
 import KnowledgeCheck from '@/components/KnowledgeCheck';
 import { isModuleComplete, markModuleComplete, markModuleIncomplete, saveQuizScore, setLastModule, updateTimeSpent } from '@/lib/progress';
 import { ThemeToggle } from '@/components/ThemeProvider';
+import BackToTop from '@/components/BackToTop';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const PDFViewer = lazy(() => import('@/components/PDFViewer'));
 
@@ -255,7 +257,7 @@ export default function ChapterView() {
           </div>
         </header>
 
-        <main className="pt-24 pb-32 px-6">
+        <main id="main-content" className="pt-24 pb-32 px-6">
           <motion.article
             variants={containerVariants}
             initial="hidden"
@@ -383,12 +385,14 @@ export default function ChapterView() {
                 <h2 className="text-sm text-[var(--foreground-subtle)] mb-4 tracking-wide uppercase">
                   Verify Your Understanding
                 </h2>
-                <KnowledgeCheck
-                  questions={module.quiz}
-                  onComplete={handleQuizComplete}
-                  onAdvanceToNext={handleAdvanceToNext}
-                  hasNextModule={!!nextModule}
-                />
+                <ErrorBoundary>
+                  <KnowledgeCheck
+                    questions={module.quiz}
+                    onComplete={handleQuizComplete}
+                    onAdvanceToNext={handleAdvanceToNext}
+                    hasNextModule={!!nextModule}
+                  />
+                </ErrorBoundary>
               </motion.section>
             )}
 
@@ -454,6 +458,8 @@ export default function ChapterView() {
             )}
           </div>
         </div>
+
+        <BackToTop />
       </div>
 
       {/* PDF Panel - Desktop: Resizable Sidebar, Mobile: Full-screen modal */}
@@ -471,24 +477,28 @@ export default function ChapterView() {
             >
               <div className={`absolute top-1/2 -translate-y-1/2 left-0 w-1 h-16 rounded-full transition-colors ${isDragging ? 'bg-[var(--accent)]' : 'bg-[var(--border-subtle)] group-hover:bg-[var(--accent)]'}`} />
             </div>
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-full">
-                <div className="w-6 h-6 border-2 border-[var(--foreground-subtle)] border-t-transparent rounded-full animate-spin" />
-              </div>
-            }>
-              <PDFViewer pageNumber={pdfPage} onClose={() => setShowPDF(false)} />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={
+                <div className="flex items-center justify-center h-full">
+                  <div className="w-6 h-6 border-2 border-[var(--foreground-subtle)] border-t-transparent rounded-full animate-spin" />
+                </div>
+              }>
+                <PDFViewer pageNumber={pdfPage} onClose={() => setShowPDF(false)} />
+              </Suspense>
+            </ErrorBoundary>
           </aside>
 
           {/* Mobile Full-screen Modal */}
           <div className="lg:hidden fixed inset-0 z-50 bg-[var(--background)]">
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-full">
-                <div className="w-6 h-6 border-2 border-[var(--foreground-subtle)] border-t-transparent rounded-full animate-spin" />
-              </div>
-            }>
-              <PDFViewer pageNumber={pdfPage} onClose={() => setShowPDF(false)} />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={
+                <div className="flex items-center justify-center h-full">
+                  <div className="w-6 h-6 border-2 border-[var(--foreground-subtle)] border-t-transparent rounded-full animate-spin" />
+                </div>
+              }>
+                <PDFViewer pageNumber={pdfPage} onClose={() => setShowPDF(false)} />
+              </Suspense>
+            </ErrorBoundary>
           </div>
         </>
       )}
